@@ -1,9 +1,11 @@
 package com.justin.finance_tracker.service;
 
+import com.justin.finance_tracker.dto.LoginDto;
 import com.justin.finance_tracker.dto.RegisterDto;
 import com.justin.finance_tracker.model.User;
 import com.justin.finance_tracker.repository.UserRepository;
 import com.justin.finance_tracker.util.ESystemStatus;
+import com.justin.finance_tracker.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     private static final String PASSWORD_PATTERN =
             "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$";
@@ -49,6 +52,13 @@ public class AuthService {
 
         userRepository.save(user);
         return ESystemStatus.SUCCESS;
+    }
+
+    public String login(LoginDto loginDto) {
+        return userRepository.findByEmail(loginDto.getEmail())
+                .filter(user -> passwordEncoder.matches(loginDto.getPassword(), user.getPassword()))
+                .map(user -> jwtUtil.generateToken(user.getEmail()))
+                .orElse(null); // null indicates invalid credentials
     }
 
 }

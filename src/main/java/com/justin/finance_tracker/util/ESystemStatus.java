@@ -6,5 +6,6 @@ public enum ESystemStatus {
     EMAIL_TAKEN,
     PASSWORD_MISMATCH,
     INVALID_PASSWORD,
+    INVALID_CREDENTIALS,
     ERROR
 }
