@@ -57,7 +57,7 @@ public class AuthService {
     public String login(LoginDto loginDto) {
         return userRepository.findByEmail(loginDto.getEmail())
                 .filter(user -> passwordEncoder.matches(loginDto.getPassword(), user.getPassword()))
-                .map(user -> jwtUtil.generateToken(user.getEmail()))
+                .map(user -> jwtUtil.generateToken(user.getId(), user.getEmail()))
                 .orElse(null); // null indicates invalid credentials
     }
 
