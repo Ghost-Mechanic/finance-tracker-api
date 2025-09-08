@@ -1,6 +1,5 @@
 package com.justin.finance_tracker.controller;
 
-import com.justin.finance_tracker.controller.TransactionController;
 import com.justin.finance_tracker.dto.TransactionDto;
 import com.justin.finance_tracker.service.TransactionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,23 +42,26 @@ class TransactionControllerTests {
 
     @Test
     void testCreateTransaction() {
+        // Arrange
         when(transactionService.createTransaction(transactionDto)).thenReturn(transactionDto);
 
-        TransactionDto response = transactionController.createTransaction(transactionDto);
+        // Act
+        ResponseEntity<TransactionDto> response = transactionController.createTransaction(transactionDto);
 
-        assertEquals(transactionDto, response);
+        assertEquals(transactionDto, response.getBody());          // check body
         verify(transactionService, times(1)).createTransaction(transactionDto);
     }
+
 
     @Test
     void testGetTransactionsByBudget() {
         List<TransactionDto> transactions = Arrays.asList(transactionDto);
         when(transactionService.getTransactionsByBudget(1L)).thenReturn(transactions);
 
-        List<TransactionDto> response = transactionController.getTransactionsByBudget(1L);
+        ResponseEntity<List<TransactionDto>> response = transactionController.getTransactionsByBudget(1L);
 
-        assertEquals(1, response.size());
-        assertEquals(transactionDto, response.get(0));
+        assertEquals(1, response.getBody().size());
+        assertEquals(transactionDto, response.getBody().get(0));
         verify(transactionService, times(1)).getTransactionsByBudget(1L);
     }
 
