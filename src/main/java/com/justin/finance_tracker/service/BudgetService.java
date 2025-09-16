@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class BudgetService {
                         .budgetAmount(dto.getBudgetAmount())
                         .budget(budget)
                         .build())
-                .toList();
+                .collect(Collectors.toList());
 
         // Validation: check categories total
         BigDecimal totalCategories = categories.stream()
@@ -58,7 +59,8 @@ public class BudgetService {
             throw new IllegalArgumentException("A budget cannot have more than 10 categories");
         }
 
-        budget.setCategories(categories);
+        budget.getCategories().clear();
+        budget.getCategories().addAll(categories);
 
         Budget saved = budgetRepository.save(budget);
 
@@ -86,7 +88,7 @@ public class BudgetService {
                             catDto.setBudgetAmount(cat.getBudgetAmount());
                             return catDto;
                         })
-                        .toList()
+                        .collect(Collectors.toList())
         );
         return dto;
     }
