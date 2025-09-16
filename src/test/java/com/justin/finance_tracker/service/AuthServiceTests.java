@@ -128,7 +128,7 @@ class AuthServiceTests {
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
-        when(jwtUtil.generateToken(email)).thenReturn(token);
+        when(jwtUtil.generateToken(user.getId(), email)).thenReturn(token);
 
         LoginDto loginDto = new LoginDto();
         loginDto.setEmail(email);
